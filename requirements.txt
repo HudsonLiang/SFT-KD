@@ -8,3 +8,4 @@ safetensors
 evaluate
 sentencepiece
 huggingface_hub
+modelscope

@@ -1,16 +1,16 @@
 import os
 import glob
 from pprint import pprint
-from datasets import load_from_disk, load_dataset, DatasetDict
-import modelscope
-from modelscope.msdatasets import MsDataset
+from datasets import load_from_disk, DatasetDict
+from modelscope.msdatasets import load_dataset as ms_load_dataset
 
 # /Users/hudson_1/projects/SFT-KD/scripts/qa_loader.py
 
 DATASET_NAME = "psychology-10k-Deepseek-R1-zh"
 
 def main():
-    ds = modelscope.load_dataset(DATASET_NAME)
+    # use ModelScope dataset loader for names in ModelScope registry
+    ds = ms_load_dataset(DATASET_NAME)
 
     # normalize to a Dataset (choose first split if DatasetDict)
     if isinstance(ds, DatasetDict):
