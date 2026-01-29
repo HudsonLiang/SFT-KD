@@ -1,6 +1,6 @@
 torch>=2.0
 transformers>=4.35.0
-datasets>=2.10
+datasets>=2.11
 accelerate>=0.20.3
 peft>=0.3.0
 bitsandbytes>=0.40.0
@@ -9,3 +9,4 @@ evaluate
 sentencepiece
 huggingface_hub
 modelscope
+addict
