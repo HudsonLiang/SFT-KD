@@ -1,34 +1,29 @@
-import os
-import glob
 from pprint import pprint
 from datasets import load_from_disk, DatasetDict
-from modelscope.msdatasets import load_dataset as ms_load_dataset
+from modelscope.utils.file_utils import get_dataset_cache_root
+import os
+from modelscope.msdatasets import MsDataset
 
-# /Users/hudson_1/projects/SFT-KD/scripts/qa_loader.py
-
-DATASET_NAME = "psychology-10k-Deepseek-R1-zh"
+DATASET_NAME = "Kedreamix/psychology-10k-Deepseek-R1-zh"
 
 def main():
-    # use ModelScope dataset loader for names in ModelScope registry
-    ds = ms_load_dataset(DATASET_NAME)
+    cache_dir = get_dataset_cache_root()
+    # 构造 HuggingFace 数据集缓存路径
+    local_dataset_path = os.path.join(cache_dir, DATASET_NAME)
 
-    # normalize to a Dataset (choose first split if DatasetDict)
-    if isinstance(ds, DatasetDict):
-        split_name = next(iter(ds.keys()))
-        split = ds[split_name]
-    else:
-        split_name = None
-        split = ds
+    if not os.path.exists(local_dataset_path):
+        print(f"未找到本地缓存数据集: {local_dataset_path}")
+        return
 
-    print(f"加载成功: {DATASET_NAME}")
-    if split_name:
-        print(f"使用分割: {split_name}")
-
-    n = min(5, len(split))
-    print(f"前 {n} 条：")
-    for i in range(n):
-        pprint(split[i])
-
+    # 使用 MsDataset 加载数据集
+    ds = MsDataset.load(local_dataset_path)
+    hf_ds=ds.to_hf_dataset()
+    
+    iterable_dataset=hf_ds.to_iterable_dataset()
+    next(iter(iterable_dataset))
+    list(iterable_dataset.take(3))
+    for i, item in enumerate(iterable_dataset.take(3)):
+        print(item)
 
 if __name__ == "__main__":
     main()
